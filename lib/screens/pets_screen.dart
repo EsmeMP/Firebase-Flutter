@@ -18,6 +18,26 @@ class _PetsScreenState extends State<PetsScreen> {
   final TextEditingController _tipoController = TextEditingController();
   final TextEditingController _edadController = TextEditingController();
 
+  void _deletePet(String docId) {
+    _firestoreService.deletePet('mascotas', docId);
+  }
+
+  void _addPet() {
+    _firestoreService.addPet('mascotas', {
+      'nombre': _nombreController.text,
+      'tipo': _tipoController.text,
+      'color': _colorController.text,
+      'genero': _generoController.text,
+      'edad': int.parse(_edadController.text),
+    });
+
+    _nombreController.clear();
+    _tipoController.clear();
+    _colorController.clear();
+    _generoController.clear();
+    _edadController.clear();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,7 +67,7 @@ class _PetsScreenState extends State<PetsScreen> {
             decoration: const InputDecoration(labelText: 'Edad'),
           ),
           ElevatedButton(
-            onPressed: null,
+            onPressed: _addPet,
             child: const Text('Agregar mascota'),
           ),
           // Aqui se muestra las mascotas
@@ -80,7 +100,7 @@ class _PetsScreenState extends State<PetsScreen> {
                       ),
                       onTap: null,
                       trailing: IconButton(
-                        onPressed: null,
+                        onPressed: () => _deletePet(pet.id),
                         icon: Icon(Icons.delete),
                       ),
                     );
