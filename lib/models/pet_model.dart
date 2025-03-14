@@ -33,14 +33,18 @@ class PetModel {
 
   // crear un petmodel desde un documentoSnapshot
   // cuando traemos informacion de Firebase
+
   factory PetModel.fromDocumentSnapshot(DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>? ?? {}; // Previene nulos
     return PetModel(
       id: doc.id,
-      nombre: doc['nombre'],
-      genero: doc['genero'],
-      color: doc['color'],
-      tipo: doc['tipo'],
-      edad: doc['edad'] as int,
+      nombre: data['nombre'] ?? 'Desconocido',
+      genero: data['genero'] ?? 'Desconocido',
+      color: data['color'] ?? 'Sin color', // Evita el error si no existe
+      tipo: data['tipo'] ?? 'Desconocido',
+      edad: (data['edad'] is int)
+          ? data['edad'] as int
+          : int.tryParse(data['edad'].toString()) ?? 0,
     );
   }
 }
