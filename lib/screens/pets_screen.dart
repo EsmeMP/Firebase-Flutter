@@ -38,6 +38,99 @@ class _PetsScreenState extends State<PetsScreen> {
     _edadController.clear();
   }
 
+  void _updatePet(
+    String docId,
+    TextEditingController nombreController,
+    TextEditingController tipoController,
+    TextEditingController colorController,
+    TextEditingController generoController,
+    TextEditingController edadController,
+  ) {
+    if (edadController.text.isEmpty ||
+        int.tryParse(edadController.text) == null) {
+      // print("Error: Edad inválida");
+      return;
+    }
+
+    _firestoreService.updatePet('mascotas', docId, {
+      'nombre': nombreController.text,
+      'tipo': tipoController.text,
+      'color': colorController.text,
+      'genero': generoController.text,
+      'edad': int.parse(edadController.text),
+    });
+
+    Navigator.of(context).pop(); // Cierra el diálogo después de actualizar
+  }
+
+  void _showUpdateDialog(PetModel pet) {
+    TextEditingController nombreController = TextEditingController();
+    TextEditingController tipoController = TextEditingController();
+    TextEditingController colorController = TextEditingController();
+    TextEditingController generoController = TextEditingController();
+    TextEditingController edadController = TextEditingController();
+    nombreController.text = pet.nombre;
+    tipoController.text = pet.tipo;
+    colorController.text = pet.color;
+    generoController.text = pet.genero;
+    edadController.text = pet.edad.toString();
+
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Actualizar mascota'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: nombreController,
+                  decoration: const InputDecoration(
+                    labelText: 'Nombre',
+                  ),
+                ),
+                TextField(
+                  controller: tipoController,
+                  decoration: const InputDecoration(
+                    labelText: 'Tipo',
+                  ),
+                ),
+                TextField(
+                  controller: colorController,
+                  decoration: const InputDecoration(
+                    labelText: 'Color',
+                  ),
+                ),
+                TextField(
+                  controller: generoController,
+                  decoration: const InputDecoration(
+                    labelText: 'Genero',
+                  ),
+                ),
+                TextField(
+                  controller: edadController,
+                  decoration: const InputDecoration(
+                    labelText: 'Edad',
+                  ),
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text('Cancelar')),
+              TextButton(
+                  onPressed: () {
+                    _updatePet(pet.id, nombreController, tipoController,
+                        colorController, generoController, edadController);
+                    // Navigator.of(context).pop();
+                  },
+                  child: Text('Actualizar')),
+            ],
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -98,7 +191,7 @@ class _PetsScreenState extends State<PetsScreen> {
                           Text(pet.edad.toString()),
                         ],
                       ),
-                      onTap: null,
+                      onTap: () => _showUpdateDialog(pet),
                       trailing: IconButton(
                         onPressed: () => _deletePet(pet.id),
                         icon: Icon(Icons.delete),
