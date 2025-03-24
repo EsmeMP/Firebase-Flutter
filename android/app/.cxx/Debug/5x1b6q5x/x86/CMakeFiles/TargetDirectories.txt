@@ -1,0 +1,2 @@
+/home/memee/flutter_apps/firebase/fire_crud_5a25/android/app/.cxx/Debug/5x1b6q5x/x86/CMakeFiles/edit_cache.dir
+/home/memee/flutter_apps/firebase/fire_crud_5a25/android/app/.cxx/Debug/5x1b6q5x/x86/CMakeFiles/rebuild_cache.dir
